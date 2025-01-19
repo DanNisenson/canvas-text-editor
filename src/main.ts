@@ -4,7 +4,7 @@ const canvas = document.createElement("canvas");
 
 const appConfig = {
   fillStyle: "white",
-  fontFamily: "Courier",
+  fontFamily: "Courier New",
   fontSize: 16,
   h: app.clientHeight,
   margin: 16,
@@ -13,18 +13,39 @@ const appConfig = {
 
 const ctx = setUpCanvas(app, appConfig);
 
-const buffer =
-  "Lorem ipsum dolor sit amet consectetur adipiscing elit. Lorem ipsum dolor sit amet consectetur adipiscing elit. Lorem ipsum dolor sit amet consectetur adipiscing elit. \nThis is a new line\nOne more\n";
+let buffer =
+  "Lorem ipsum dolor sit amet consectetur adipiscing elit. Lorem ipsum dolor sit amet consectetur adipiscing elit.";
 
-buffer.split("\n").forEach((line, i) => {
-  // set scroll
-  if (ctx.measureText(line).width - appConfig.margin > appConfig.w) {
-    appConfig.w = ctx.measureText(line).width + appConfig.margin * 2;
-    resizeCanvas(appConfig.w);
+draw();
+
+// user input
+globalThis.addEventListener("keydown", (e) => {
+  if (e.key.length == 1) {
+    buffer += e.key;
+  } else if (e.key == "Backspace") {
+    buffer = buffer.slice(0, buffer.length - 1);
+  } else if (e.key == "Enter") {
+    buffer += "\n";
   }
-  // render line
-  ctx.fillText(line, appConfig.margin, appConfig.margin * (i + 1));
+  draw();
 });
+
+function draw() {
+  // clear canvas
+  ctx.clearRect(0, 0, appConfig.w, appConfig.h);
+
+  buffer.split("\n").forEach((line, i) => {
+    // add line number
+    line = (i + 1) + " " + line.trim();
+    // set scroll
+    if (ctx.measureText(line).width - appConfig.margin > appConfig.w) {
+      const w = ctx.measureText(line).width + appConfig.margin * 2;
+      resizeCanvas(w);
+    }
+    // render line
+    ctx.fillText(line, appConfig.margin, appConfig.margin * (i + 1));
+  });
+}
 
 function resizeCanvas(w: number) {
   canvas.width = w * dpr;

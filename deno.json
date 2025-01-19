@@ -7,6 +7,6 @@
     "build": "vite build"
   },
   "compilerOptions": {
-    "lib": ["dom", "ES2020", "DOM", "DOM.Iterable"]
+    "lib": ["dom", "ES2022", "DOM", "DOM.Iterable"]
   }
 }

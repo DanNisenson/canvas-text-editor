@@ -1,0 +1,12 @@
+{
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^1.0.0"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build"
+  },
+  "compilerOptions": {
+    "lib": ["dom", "ES2020", "DOM", "DOM.Iterable"]
+  }
+}

@@ -1,6 +1,16 @@
+import { Canvas } from "./Canvas.ts";
+import { AppConfig } from "./main.ts";
+
 export class Caret {
+  private _canvas: Canvas;
+  private _config: AppConfig;
   private _line = 0;
   private _char = 0;
+
+  constructor(canvas: Canvas, config: AppConfig) {
+    this._canvas = canvas;
+    this._config = config;
+  }
 
   get line() {
     return this._line;
@@ -60,5 +70,19 @@ export class Caret {
 
   moveToLineStart() {
     this._char = 0;
+  }
+
+  draw() {
+    const caretW = this.char * this._canvas.charW + this._config.marginX +
+      this._canvas.charW * 2;
+    const caretY =
+      (this.line) * this._config.fontSize * this._config.lineHeight +
+      this._config.marginY;
+    this._canvas.ctx.fillRect(
+      caretW,
+      caretY,
+      1,
+      this._config.fontSize * this._config.lineHeight,
+    );
   }
 }

@@ -1,34 +1,49 @@
+import { Caret } from "./Caret.ts";
+
 const app = document.querySelector<HTMLDivElement>("#app")!;
 const dpr = globalThis.devicePixelRatio;
-const canvas = document.createElement("canvas");
 
 const config = {
   marginX: 16,
-  marginY: 100,
+  marginY: 16,
   fillStyle: "white",
 
   fontFamily: "Courier New",
-  fontSize: 16,
+  fontSize: 14,
   lineHeight: 1.5,
 
   w: app.clientWidth,
   h: app.clientHeight,
 };
 
-const ctx = setUpCanvas(app, config);
+const canvas = document.createElement("canvas");
+setUpCanvas(app, config);
+const ctx = canvas.getContext("2d")!;
+const charW = setContextConfig(ctx, config);
 
-let buffer = "JjQqGg Lorem ipsum dolor sit amet consectetur adipiscing elit. ";
+const mock = "JjQqGg\nA\nline";
+
+const lines = mock.split("\n");
+const caret = new Caret();
 
 draw();
 
 // user input
 globalThis.addEventListener("keydown", (e) => {
   if (e.key.length == 1) {
-    buffer += e.key;
+    insertChar(e.key);
   } else if (e.key == "Backspace") {
-    buffer = buffer.slice(0, buffer.length - 1);
+    deleteChar();
   } else if (e.key == "Enter") {
-    buffer += "\n";
+    insertChar("\n");
+  } else if (e.key == "ArrowLeft") {
+    caret.moveLeft(lines);
+  } else if (e.key == "ArrowRight") {
+    caret.moveRight(lines);
+  } else if (e.key == "ArrowUp") {
+    caret.moveUp(lines);
+  } else if (e.key == "ArrowDown") {
+    caret.moveDown(lines);
   }
   draw();
 });
@@ -37,12 +52,10 @@ function draw() {
   // clear canvas
   ctx.clearRect(0, 0, config.w, config.h);
 
-  let caretY = config.fontSize * config.lineHeight;
-
   // add line numbers
-  const lines = buffer.split("\n").map((line, i) => (i + 1) + " " + line);
+  const numLines = lines.map((line, i) => (i + 1) + " " + line);
 
-  lines.forEach((line, i) => {
+  numLines.forEach((line, i) => {
     // set scroll
     if (ctx.measureText(line).width - config.marginX > config.w) {
       const w = ctx.measureText(line).width + config.marginX * 2;
@@ -50,46 +63,67 @@ function draw() {
     }
 
     // render text
-    const lineY = config.fontSize * config.lineHeight * (i + 1);
-    caretY = lineY;
-
-    ctx.fillText(line, config.marginX, lineY + config.fontSize);
+    const lineY = config.fontSize * config.lineHeight * i;
+    ctx.fillText(
+      line,
+      config.marginX,
+      lineY + config.fontSize + config.marginY,
+    );
   });
 
-  const w = ctx.measureText(lines.at(-1)!).width + config.marginX;
   // render caret
+  const caretW = caret.char * charW + config.marginX + charW * 2;
+  const caretY = (caret.line) * config.fontSize * config.lineHeight +
+    config.marginY;
   ctx.fillRect(
-    w,
+    caretW,
     caretY,
     1,
     config.fontSize * config.lineHeight,
   );
 }
 
-function resizeCanvas(w: number) {
-  canvas.width = w * dpr;
-  canvas.style.width = w + "px";
-  canvas.getContext("2d")!.scale(dpr, dpr);
-  setContextConfig(ctx, config);
+function insertChar(char: string) {
+  let line = lines[caret.line];
+  if (char == "\n") {
+    lines[caret.line] = line.slice(0, caret.char);
+    lines.splice(caret.line + 1, 0, line.slice(caret.char));
+  } else {
+    line = line.slice(0, caret.char) + char + line.slice(caret.char);
+    lines[caret.line] = line;
+  }
+  caret.moveRight(lines);
 }
+
+function deleteChar() {
+  let line = lines[caret.line];
+  if (caret.char > 0) {
+    line = line.slice(0, caret.char - 1) + line.slice(caret.char);
+    lines[caret.line] = line;
+    caret.moveLeft(lines);
+  } else if (caret.char == 0 && caret.line > 0) {
+    const prev = lines[caret.line - 1];
+    lines[caret.line - 1] = prev + line;
+    lines.splice(caret.line, 1);
+    caret.char = prev.length;
+    caret.line = caret.line - 1;
+  }
+}
+
+/* */
 
 function setUpCanvas(
   htmlParent: HTMLElement,
   conf: typeof config,
-): CanvasRenderingContext2D {
-  setCanvasSize(conf.w, conf.h);
+) {
+  initCanvasSize(conf.w, conf.h);
   htmlParent.appendChild(canvas);
 
   canvas.style.display = "block";
   canvas.style.backgroundColor = "#000000F0";
-
-  const ctx = canvas.getContext("2d")!;
-  setContextConfig(ctx, conf);
-
-  return ctx;
 }
 
-function setCanvasSize(
+function initCanvasSize(
   width: number,
   height: number,
 ) {
@@ -103,10 +137,23 @@ function setCanvasSize(
   return canvas;
 }
 
+function resizeCanvas(w: number) {
+  canvas.width = w * dpr;
+  canvas.style.width = w + "px";
+  canvas.getContext("2d")!.scale(dpr, dpr);
+  setContextConfig(ctx, config);
+}
+
 function setContextConfig(
   ctx: CanvasRenderingContext2D,
   conf: typeof config,
 ) {
   ctx.font = `${conf.fontSize}px ${conf.fontFamily}`;
   ctx.fillStyle = conf.fillStyle;
+  return charth(ctx);
+}
+
+function charth(ctx: CanvasRenderingContext2D) {
+  const char = " ";
+  return ctx.measureText(char).width;
 }

@@ -1,6 +1,6 @@
 # To Do
 
-[ ] Pad left line num (allow 1000s)
+[X] Pad left line num (allow 1000s)
 [ ] Vertical scroll
 [ ] Jump word
 [ ] Jump to line end/start

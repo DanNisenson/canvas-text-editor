@@ -1,4 +1,5 @@
 import { Canvas } from "./Canvas.ts";
+import { LineNum } from "./LineNum.ts";
 import { AppConfig } from "./main.ts";
 
 export class Caret {
@@ -74,9 +75,8 @@ export class Caret {
 
   draw() {
     const caretW = this.char * this._canvas.charW + this._config.marginX +
-      this._canvas.charW * 2;
-    const caretY =
-      (this.line) * this._config.fontSize * this._config.lineHeight +
+      LineNum.getLineNumberWidth(this._canvas.ctx);
+    const caretY = this.line * this._config.fontSize * this._config.lineHeight +
       this._config.marginY;
     this._canvas.ctx.fillRect(
       caretW,

@@ -1,5 +1,6 @@
 import { Canvas } from "./Canvas.ts";
 import { Caret } from "./Caret.ts";
+import { LineNum } from "./LineNum.ts";
 import { AppConfig } from "./main.ts";
 
 export class TextContent {
@@ -49,10 +50,7 @@ export class TextContent {
   }
 
   draw() {
-    // add line numbers
-    const numLines = this._lines.map((line, i) => (i + 1) + " " + line);
-
-    numLines.forEach((line, i) => {
+    this.getLinesWithNumbers().forEach((line, i) => {
       // set scroll
       if (
         this._canvas.ctx.measureText(line).width - this._config.marginX >
@@ -71,5 +69,11 @@ export class TextContent {
         lineY + this._config.fontSize + this._config.marginY,
       );
     });
+  }
+
+  private getLinesWithNumbers() {
+    return this._lines.map((line, i) =>
+      LineNum.getLineNumberString(i + 1) + line
+    );
   }
 }

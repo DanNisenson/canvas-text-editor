@@ -12,3 +12,4 @@
 [ ] Load
 [ ] Save
 [ ] Resize
+[ ] Auto-scroll follows caret

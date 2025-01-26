@@ -29,14 +29,26 @@ draw();
 
 // user input
 globalThis.addEventListener("keydown", (e) => {
-  e.preventDefault();
   if (e.key.length == 1) {
     text.insertChar(e.key, caret);
   } else if (e.key == "Backspace") {
     text.deleteChar(caret);
   } else if (e.key == "Enter") {
     text.insertChar("\n", caret);
-  } else if (e.key == "ArrowLeft") {
+  }
+  onArrowKeyDown(e);
+  draw();
+});
+
+function draw() {
+  canvas.ctx.clearRect(0, 0, config.w, config.h);
+  text.draw();
+  caret.draw();
+}
+
+function onArrowKeyDown(e: KeyboardEvent) {
+  e.preventDefault();
+  if (e.key == "ArrowLeft") {
     caret.moveLeft(text.lines);
   } else if (e.key == "ArrowRight") {
     caret.moveRight(text.lines);
@@ -45,11 +57,4 @@ globalThis.addEventListener("keydown", (e) => {
   } else if (e.key == "ArrowDown") {
     caret.moveDown(text.lines);
   }
-  draw();
-});
-
-function draw() {
-  canvas.ctx.clearRect(0, 0, config.w, config.h);
-  text.draw();
-  caret.draw();
 }

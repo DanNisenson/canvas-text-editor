@@ -29,6 +29,7 @@ draw();
 
 // user input
 globalThis.addEventListener("keydown", (e) => {
+  e.preventDefault();
   if (e.key.length == 1) {
     text.insertChar(e.key, caret);
   } else if (e.key == "Backspace") {

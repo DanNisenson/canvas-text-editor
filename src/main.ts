@@ -20,7 +20,7 @@ const config = {
 };
 
 const mock =
-  "JjQqGg\nA\nline\naasdasdasdasdasdasdadaghdsajdhskjadhnskjadhskadhksajdhskajdhskajdhskadhskjahdkjsahdkjahkj";
+  "JjQqGg\nA\nline\na\na\ns\nd\na\ns\nd\na\ns\nd\na\ns\nd\na\ns\nd\na\ns\nd\na\nd\na\ng\nh\nd\ns\na\nj\nd\nh\ns\nk\nj\na\nd\nh\nn\ns\nk\njadhskadhksajdhskajdhskajdhskadhskjahdkjsahdkjahkj";
 
 const canvas = new Canvas(app, config);
 const text = new TextContent(canvas, config, mock);
@@ -64,6 +64,6 @@ function onArrowKeyDown(e: KeyboardEvent) {
 window.addEventListener("resize", () => {
   config.w = app.clientWidth;
   config.h = app.clientHeight;
-  canvas.resize(config.w);
+  canvas.resize(config.w, config.h);
   draw();
 });

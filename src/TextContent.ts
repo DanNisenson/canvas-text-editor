@@ -51,16 +51,37 @@ export class TextContent {
 
   draw() {
     const lines = this.getLinesWithNumbers();
-    // set horizontal scroll
+    this.setHorizontalScroll(lines);
+    this.setVerticalScroll(lines);
+    this.renderText(lines);
+  }
+
+  private getLinesWithNumbers() {
+    return this._lines.map((line, i) =>
+      LineNum.getLineNumberString(i + 1) + line
+    );
+  }
+
+  private setHorizontalScroll(lines: string[]) {
     for (const line of lines) {
       const lineW = this.getLineWidth(line);
       if (lineW > this._config.w) {
-        this._canvas.resizeAvailableWidth(lineW);
+        this._canvas.resizeWidth(lineW);
         break;
       }
     }
+  }
 
-    // render text
+  private setVerticalScroll(lines: string[]) {
+    const textH = lines.length * this._config.fontSize *
+        this._config.lineHeight + this._config.marginY * 2;
+
+    if (textH > this._config.h) {
+      this._canvas.resizeHeight(textH);
+    }
+  }
+
+  private renderText(lines: string[]) {
     lines.forEach((line, i) => {
       const lineY = this.getLineY(i);
       this._canvas.ctx.fillText(
@@ -69,12 +90,6 @@ export class TextContent {
         lineY + this._config.fontSize + this._config.marginY,
       );
     });
-  }
-
-  private getLinesWithNumbers() {
-    return this._lines.map((line, i) =>
-      LineNum.getLineNumberString(i + 1) + line
-    );
   }
 
   private getLineWidth(line: string) {

@@ -21,13 +21,19 @@ export class Canvas {
     return this._config.marginX * 2;
   }
 
-  resizeAvailableWidth(w: number) {
-    this.resize(w + this.marginX);
+  resizeWidth(w: number) {
+    this.resize(w + this.marginX, this._config.h);
   }
 
-  resize(w: number) {
+  resizeHeight(h: number) {
+    this.resize(this._config.w, h);
+  }
+
+  resize(w: number, h: number) {
     this.canvas.width = w * this._config.dpr;
+    this.canvas.height = h * this._config.dpr;
     this.canvas.style.width = w + "px";
+    this.canvas.style.height = h + "px";
     this.canvas.getContext("2d")!.scale(this._config.dpr, this._config.dpr);
     this.setContextConfig(this.ctx, this._config);
   }

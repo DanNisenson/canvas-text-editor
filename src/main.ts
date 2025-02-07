@@ -19,7 +19,8 @@ const config = {
   lineHeight: 1.5,
 };
 
-const mock = "JjQqGg\nA\nline";
+const mock =
+  "JjQqGg\nA\nline\naasdasdasdasdasdasdadaghdsajdhskjadhnskjadhskadhksajdhskajdhskajdhskadhskjahdkjsahdkjahkj";
 
 const canvas = new Canvas(app, config);
 const text = new TextContent(canvas, config, mock);
@@ -58,3 +59,11 @@ function onArrowKeyDown(e: KeyboardEvent) {
     caret.moveDown(text.lines);
   }
 }
+
+// resize
+window.addEventListener("resize", () => {
+  config.w = app.clientWidth;
+  config.h = app.clientHeight;
+  canvas.resize(config.w);
+  draw();
+});

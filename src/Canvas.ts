@@ -9,29 +9,42 @@ export class Canvas {
 
   constructor(htmlParent: HTMLElement, conf: AppConfig) {
     this._config = conf;
-    this.setUpCanvas(htmlParent, conf);
+    this.setUp(htmlParent, conf);
     this.setContextConfig(this.ctx, this._config);
   }
 
-  resizeCanvas(w: number) {
+  get width() {
+    return this.canvas.width / this._config.dpr;
+  }
+
+  get marginX() {
+    return this._config.marginX * 2;
+  }
+
+  resizeAvailableWidth(w: number) {
+    this.resize(w + this.marginX);
+  }
+
+  resize(w: number) {
     this.canvas.width = w * this._config.dpr;
     this.canvas.style.width = w + "px";
     this.canvas.getContext("2d")!.scale(this._config.dpr, this._config.dpr);
     this.setContextConfig(this.ctx, this._config);
   }
 
-  setUpCanvas(
+  setUp(
     htmlParent: HTMLElement,
     conf: AppConfig,
   ) {
-    this.initCanvasSize(conf.w, conf.h);
+    this.initSize(conf.w, conf.h);
     htmlParent.appendChild(this.canvas);
 
+    this.canvas.parentElement!.style.display = "flex";
     this.canvas.style.display = "block";
     this.canvas.style.backgroundColor = "#000000F0";
   }
 
-  initCanvasSize(
+  initSize(
     width: number,
     height: number,
   ) {

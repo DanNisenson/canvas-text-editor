@@ -50,19 +50,19 @@ export class TextContent {
   }
 
   draw() {
-    this.getLinesWithNumbers().forEach((line, i) => {
-      // set scroll
-      if (
-        this._canvas.ctx.measureText(line).width - this._config.marginX >
-          this._config.w
-      ) {
-        const w = this._canvas.ctx.measureText(line).width +
-          this._config.marginX * 2;
-        this._canvas.resizeCanvas(w);
+    const lines = this.getLinesWithNumbers();
+    // set horizontal scroll
+    for (const line of lines) {
+      const lineW = this.getLineWidth(line);
+      if (lineW > this._config.w) {
+        this._canvas.resizeAvailableWidth(lineW);
+        break;
       }
+    }
 
-      // render text
-      const lineY = this._config.fontSize * this._config.lineHeight * i;
+    // render text
+    lines.forEach((line, i) => {
+      const lineY = this.getLineY(i);
       this._canvas.ctx.fillText(
         line,
         this._config.marginX,
@@ -75,5 +75,14 @@ export class TextContent {
     return this._lines.map((line, i) =>
       LineNum.getLineNumberString(i + 1) + line
     );
+  }
+
+  private getLineWidth(line: string) {
+    return this._canvas.ctx.measureText(line).width +
+      this._canvas.marginX;
+  }
+
+  private getLineY(i: number) {
+    return this._config.fontSize * this._config.lineHeight * i;
   }
 }

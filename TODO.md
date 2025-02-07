@@ -2,7 +2,7 @@
 
 [X] Pad left line num (allow 1000s)
 [X] Vertical scroll
-[ ] Jump word
+[X] Jump to word start/end
 [X] Jump to line end/start
 [ ] Jump to page end/start
 [ ] Select text

@@ -67,6 +67,12 @@ export class KeyListener {
       case "ArrowRight":
         this._caret.jumpToLineEnd(this._text.lines);
         break;
+      case ("ArrowUp"):
+        this._caret.jumpToPageStart();
+        break;
+      case ("ArrowDown"):
+        this._caret.jumpToPageEnd(this._text.lines);
+        break;
     }
   }
 

@@ -73,6 +73,16 @@ export class Caret {
     this._char = lines[this._line].length;
   }
 
+  jumpToPageStart() {
+    this._char = 0;
+    this._line = 0;
+  }
+
+  jumpToPageEnd(lines: string[]) {
+    this._char = lines[lines.length - 1].length;
+    this._line = lines.length - 1;
+  }
+
   jumpToWordStart(lines: string[]) {
     if (this._char === 0) return;
 

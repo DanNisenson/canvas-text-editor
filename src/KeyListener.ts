@@ -19,7 +19,7 @@ export class KeyListener {
       } else if (e.ctrlKey) {
         //
       } else if (e.altKey) {
-        //
+        this.performAltActions(e.key);
       } else {
         this.performKeyAction(e.key);
       }
@@ -62,10 +62,21 @@ export class KeyListener {
   private performMetaActions(key: string) {
     switch (key) {
       case "ArrowLeft":
-        this._caret.moveToLineStart();
+        this._caret.jumpToLineStart();
         break;
       case "ArrowRight":
-        this._caret.moveToLineEnd(this._text.lines);
+        this._caret.jumpToLineEnd(this._text.lines);
+        break;
+    }
+  }
+
+  private performAltActions(key: string) {
+    switch (key) {
+      case "ArrowLeft":
+        this._caret.jumpToWordStart(this._text.lines);
+        break;
+      case "ArrowRight":
+        this._caret.jumpToWordEnd(this._text.lines);
         break;
     }
   }

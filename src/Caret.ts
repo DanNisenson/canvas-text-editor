@@ -51,7 +51,7 @@ export class Caret {
     if (this._line < (lines.length - 1)) {
       this._line++;
       if (this._char > lines[this._line].length) {
-        this.moveToLineEnd(lines);
+        this.jumpToLineEnd(lines);
       }
     }
   }
@@ -60,17 +60,65 @@ export class Caret {
     if (this._line > 0) {
       this._line--;
       if (this._char > lines[this._line].length) {
-        this.moveToLineEnd(lines);
+        this.jumpToLineEnd(lines);
       }
     }
   }
 
-  moveToLineEnd(lines: string[]) {
+  jumpToLineStart() {
+    this._char = 0;
+  }
+
+  jumpToLineEnd(lines: string[]) {
     this._char = lines[this._line].length;
   }
 
-  moveToLineStart() {
-    this._char = 0;
+  jumpToWordStart(lines: string[]) {
+    if (this._char === 0) return;
+
+    const line = lines[this._line];
+    let i = 0;
+    let charsAfterSpace = 0;
+
+    for (i = 0; i < line.length; i++) {
+      const char = line[i];
+      const prevChar = line[i - 1];
+
+      // count until we reach cursor
+      if (i === this._char) break;
+      // count chars in word and include trailing whitespace until we reach the next word
+      if (prevChar === " " && char !== " ") {
+        charsAfterSpace = 1;
+      } else {
+        charsAfterSpace++;
+      }
+    }
+
+    this._char -= charsAfterSpace || 1;
+  }
+
+  jumpToWordEnd(lines: string[]) {
+    const line = lines[this._line];
+    if (this._char >= line.length) return;
+
+    let i = 0;
+    let charsAfterSpace = 0;
+
+    for (i = line.length; i >= 0; i--) {
+      const char = line[i];
+      const nextChar = line[i + 1];
+
+      // count until we reach cursor
+      if (i === this._char) break;
+      // count chars in word and include trailing whitespace until we reach the next word
+      if (nextChar === " " && char !== " ") {
+        charsAfterSpace = 2;
+      } else {
+        charsAfterSpace++;
+      }
+    }
+
+    this._char += charsAfterSpace || 1;
   }
 
   draw() {

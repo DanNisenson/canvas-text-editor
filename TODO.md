@@ -4,6 +4,7 @@
 [X] Vertical scroll
 [ ] Jump word
 [X] Jump to line end/start
+[ ] Jump to page end/start
 [ ] Select text
 [ ] Copy/paste
 [ ] Undo/redo

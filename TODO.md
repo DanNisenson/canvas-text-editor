@@ -3,7 +3,7 @@
 [X] Pad left line num (allow 1000s)
 [X] Vertical scroll
 [ ] Jump word
-[ ] Jump to line end/start
+[X] Jump to line end/start
 [ ] Select text
 [ ] Copy/paste
 [ ] Undo/redo
@@ -11,5 +11,5 @@
 [ ] Select on click drag
 [ ] Load
 [ ] Save
-[ ] Resize
+[X] Resize
 [ ] Auto-scroll follows caret

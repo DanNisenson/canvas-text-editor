@@ -1,7 +1,7 @@
 # To Do
 
 [X] Pad left line num (allow 1000s)
-[ ] Vertical scroll
+[X] Vertical scroll
 [ ] Jump word
 [ ] Jump to line end/start
 [ ] Select text

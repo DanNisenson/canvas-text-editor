@@ -1,79 +1,101 @@
-import { AppConfig } from "./main.ts";
+export type AppConfig = typeof config;
+const config = {
+  dpr: globalThis.devicePixelRatio,
+
+  marginX: 16,
+  marginY: 16,
+  fillStyle: "white",
+
+  fontFamily: "Courier New",
+  fontSize: 14,
+  lineHeight: 1.5,
+};
 
 export class Canvas {
-  readonly canvas = document.createElement("canvas");
-  readonly ctx = this.canvas.getContext("2d")!;
   charW!: number;
 
-  private _config: AppConfig;
+  readonly config = config;
+  private readonly _wrapper = document.createElement("div");
+  private readonly _canvas = document.createElement("canvas");
+  private readonly _ctx = this._canvas.getContext("2d")!;
 
-  constructor(htmlParent: HTMLElement, conf: AppConfig) {
-    this._config = conf;
-    this.setUp(htmlParent, conf);
-    this.setContextConfig(this.ctx, this._config);
+  constructor(htmlParent: HTMLElement) {
+    this.init(htmlParent);
+    this.setContextConfig(this._ctx, this.config);
   }
 
-  get width() {
-    return this.canvas.width / this._config.dpr;
+  get ctx() {
+    return this._ctx;
   }
 
-  get marginX() {
-    return this._config.marginX * 2;
+  get w() {
+    return this._canvas.width / this.config.dpr;
+  }
+
+  get h() {
+    return this._canvas.height / this.config.dpr;
+  }
+
+  get totalMarginX() {
+    return this.config.marginX * 2;
   }
 
   resizeWidth(w: number) {
-    this.resize(w + this.marginX, this._config.h);
+    this.resize(w + this.totalMarginX, this.h);
   }
 
   resizeHeight(h: number) {
-    this.resize(this._config.w, h);
+    this.resize(this.w, h);
   }
 
-  resize(w: number, h: number) {
-    this.canvas.width = w * this._config.dpr;
-    this.canvas.height = h * this._config.dpr;
-    this.canvas.style.width = w + "px";
-    this.canvas.style.height = h + "px";
-    this.canvas.getContext("2d")!.scale(this._config.dpr, this._config.dpr);
-    this.setContextConfig(this.ctx, this._config);
+  handleScreenResize() {
+    this.resize(this._wrapper.clientWidth, this._wrapper.clientHeight);
   }
 
-  setUp(
-    htmlParent: HTMLElement,
-    conf: AppConfig,
-  ) {
-    this.initSize(conf.w, conf.h);
-    htmlParent.appendChild(this.canvas);
-
-    this.canvas.parentElement!.style.display = "flex";
-    this.canvas.style.display = "block";
-    this.canvas.style.backgroundColor = "#000000F0";
+  clear() {
+    this._ctx.clearRect(0, 0, this.w, this.h);
   }
 
-  initSize(
-    width: number,
-    height: number,
-  ) {
+  private resize(w: number, h: number) {
+    w = w > this._wrapper.clientWidth ? w : this._wrapper.clientWidth;
+    h = h > this._wrapper.clientHeight ? h : this._wrapper.clientHeight;
+    this._canvas.width = w * this.config.dpr;
+    this._canvas.height = h * this.config.dpr;
+    this._canvas.style.width = w + "px";
+    this._canvas.style.height = h + "px";
+    this._canvas.getContext("2d")!.scale(this.config.dpr, this.config.dpr);
+    this.setContextConfig(this._ctx, this.config);
+  }
+
+  private init(htmlParent: HTMLElement) {
+    htmlParent.appendChild(this._wrapper);
+    this._wrapper.appendChild(this._canvas);
+
+    this.initSize();
+
+    this._canvas.parentElement!.style.display = "flex";
+    this._canvas.style.display = "block";
+    this._canvas.style.backgroundColor = "#000000F0";
+  }
+
+  private initSize() {
     // avoid blurriness on devicePixelRatio > 1 displays
-    this.canvas.width = width * this._config.dpr;
-    this.canvas.height = height * this._config.dpr;
-    this.canvas.style.width = width + "px";
-    this.canvas.style.height = height + "px";
-    this.canvas.getContext("2d")!.scale(this._config.dpr, this._config.dpr);
+    this._canvas.width = this._wrapper.clientWidth * this.config.dpr;
+    this._canvas.height = this._wrapper.clientHeight * this.config.dpr;
+    this._canvas.style.width = this._wrapper.clientWidth + "px";
+    this._canvas.style.height = this._wrapper.clientHeight + "px";
+    this._canvas.getContext("2d")!.scale(this.config.dpr, this.config.dpr);
 
-    return this.canvas;
+    return this._canvas;
   }
 
-  setContextConfig(
-    ctx: CanvasRenderingContext2D,
-    conf: AppConfig,
-  ) {
+  private setContextConfig(ctx: CanvasRenderingContext2D, conf: AppConfig) {
     ctx.font = `${conf.fontSize}px ${conf.fontFamily}`;
     ctx.fillStyle = conf.fillStyle;
     return this.setCharWidth(ctx);
   }
 
-  setCharWidth(ctx: CanvasRenderingContext2D) {
+  private setCharWidth(ctx: CanvasRenderingContext2D) {
     const char = " ";
     this.charW = ctx.measureText(char).width;
   }

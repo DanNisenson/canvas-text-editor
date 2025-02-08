@@ -1,20 +1,16 @@
 import { Canvas } from "./Canvas.ts";
 import { Caret } from "./Caret.ts";
 import { LineNum } from "./LineNum.ts";
-import { AppConfig } from "./main.ts";
 
 export class TextContent {
   private _canvas: Canvas;
-  private _config: AppConfig;
   private _lines: string[];
 
   constructor(
     canvas: Canvas,
-    config: AppConfig,
     buffer: string,
   ) {
     this._canvas = canvas;
-    this._config = config;
     this._lines = buffer.split("\n");
   }
 
@@ -65,7 +61,7 @@ export class TextContent {
   private setHorizontalScroll(lines: string[]) {
     for (const line of lines) {
       const lineW = this.getLineWidth(line);
-      if (lineW > this._config.w) {
+      if (lineW > this._canvas.w) {
         this._canvas.resizeWidth(lineW);
         break;
       }
@@ -73,10 +69,10 @@ export class TextContent {
   }
 
   private setVerticalScroll(lines: string[]) {
-    const textH = lines.length * this._config.fontSize *
-        this._config.lineHeight + this._config.marginY * 2;
+    const textH = lines.length * this._canvas.config.fontSize *
+        this._canvas.config.lineHeight + this._canvas.config.marginY * 2;
 
-    if (textH > this._config.h) {
+    if (textH > this._canvas.h) {
       this._canvas.resizeHeight(textH);
     }
   }
@@ -86,18 +82,18 @@ export class TextContent {
       const lineY = this.getLineY(i);
       this._canvas.ctx.fillText(
         line,
-        this._config.marginX,
-        lineY + this._config.fontSize + this._config.marginY,
+        this._canvas.config.marginX,
+        lineY + this._canvas.config.fontSize + this._canvas.config.marginY,
       );
     });
   }
 
   private getLineWidth(line: string) {
     return this._canvas.ctx.measureText(line).width +
-      this._canvas.marginX;
+      this._canvas.totalMarginX;
   }
 
   private getLineY(i: number) {
-    return this._config.fontSize * this._config.lineHeight * i;
+    return this._canvas.config.fontSize * this._canvas.config.lineHeight * i;
   }
 }

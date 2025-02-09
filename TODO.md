@@ -5,7 +5,9 @@
 [X] Jump to word start/end
 [X] Jump to line end/start
 [X] Jump to page end/start
-[ ] Jump to page end/start scroll
+[X] Jump to page end/start scroll
+[ ] Delete whole word
+[ ] Delete whole line
 [ ] Select text
 [ ] Copy/paste
 [ ] Undo/redo

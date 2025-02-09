@@ -1,5 +1,5 @@
 import { Canvas } from "./Canvas.ts";
-import { LineNum } from "./LineNum.ts";
+import { LineIndex } from "./LineIndex.ts";
 
 export class Caret {
   private _canvas: Canvas;
@@ -24,6 +24,17 @@ export class Caret {
 
   set char(char: number) {
     this._char = char;
+  }
+
+  get x() {
+    return this.char * this._canvas.charW +
+      this._canvas.config.marginX +
+      LineIndex.getWidth(this._canvas.ctx);
+  }
+
+  get y() {
+    return this.line * this._canvas.config.fontSize *
+        this._canvas.config.lineHeight + this._canvas.config.marginY;
   }
 
   moveRight(lines: string[]) {
@@ -129,16 +140,9 @@ export class Caret {
   }
 
   draw() {
-    const caretW = this.char * this._canvas.charW +
-      this._canvas.config.marginX +
-      LineNum.getLineNumberWidth(this._canvas.ctx);
-    const caretY =
-      this.line * this._canvas.config.fontSize *
-        this._canvas.config.lineHeight +
-      this._canvas.config.marginY;
     this._canvas.ctx.fillRect(
-      caretW,
-      caretY,
+      this.x,
+      this.y,
       1,
       this._canvas.config.fontSize * this._canvas.config.lineHeight,
     );

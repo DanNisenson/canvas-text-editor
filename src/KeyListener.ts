@@ -1,9 +1,11 @@
+import { Canvas } from "./Canvas.ts";
 import { Caret } from "./Caret.ts";
 import { TextContent } from "./TextContent.ts";
 
 export class KeyListener {
   constructor(
     private _draw: () => void,
+    private _canvas: Canvas,
     private _text: TextContent,
     private _caret: Caret,
   ) {}
@@ -69,9 +71,11 @@ export class KeyListener {
         break;
       case ("ArrowUp"):
         this._caret.jumpToPageStart();
+        this._canvas.scrollToTop();
         break;
       case ("ArrowDown"):
         this._caret.jumpToPageEnd(this._text.lines);
+        this._canvas.scrollToBottom(this._caret.x);
         break;
     }
   }

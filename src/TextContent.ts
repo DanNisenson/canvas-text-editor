@@ -1,6 +1,6 @@
 import { Canvas } from "./Canvas.ts";
 import { Caret } from "./Caret.ts";
-import { LineNum } from "./LineNum.ts";
+import { LineIndex } from "./LineIndex.ts";
 
 export class TextContent {
   private _canvas: Canvas;
@@ -46,15 +46,16 @@ export class TextContent {
   }
 
   draw() {
-    const lines = this.getLinesWithNumbers();
+    const lines = this.getIndexedLines();
     this.setHorizontalScroll(lines);
     this.setVerticalScroll(lines);
     this.renderText(lines);
   }
 
-  private getLinesWithNumbers() {
+  /** Add line number and padding to each line */
+  private getIndexedLines() {
     return this._lines.map((line, i) =>
-      LineNum.getLineNumberString(i + 1) + line
+      LineIndex.getPaddedString(i + 1) + line
     );
   }
 

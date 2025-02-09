@@ -11,7 +11,7 @@ const mock =
 const canvas = new Canvas(app);
 const text = new TextContent(canvas, mock);
 const caret = new Caret(canvas);
-const listener = new KeyListener(draw, text, caret);
+const listener = new KeyListener(draw, canvas, text, caret);
 
 listener.listen();
 draw();
@@ -24,9 +24,6 @@ export function draw() {
 
 // resize
 globalThis.addEventListener("resize", () => {
-  // canvas.w = app.clientWidth;
-  // canvas.h = app.clientHeight;
-  // canvas.resize(canvas.w, canvas.h);
   canvas.handleScreenResize();
   draw();
 });

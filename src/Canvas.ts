@@ -56,6 +56,20 @@ export class Canvas {
     this._ctx.clearRect(0, 0, this.w, this.h);
   }
 
+  scrollToTop() {
+    this._wrapper.scroll({
+      top: 0,
+      left: 0,
+    });
+  }
+
+  scrollToBottom(x: number) {
+    this._wrapper.scroll({
+      top: this._wrapper.scrollHeight,
+      left: x,
+    });
+  }
+
   private resize(w: number, h: number) {
     w = w > this._wrapper.clientWidth ? w : this._wrapper.clientWidth;
     h = h > this._wrapper.clientHeight ? h : this._wrapper.clientHeight;
@@ -73,9 +87,9 @@ export class Canvas {
 
     this.initSize();
 
-    this._canvas.parentElement!.style.display = "flex";
-    this._canvas.style.display = "block";
-    this._canvas.style.backgroundColor = "#000000F0";
+    this._wrapper.style.overflow = "auto";
+    this._wrapper.style.maxHeight = "100%";
+    this._wrapper.style.display = "flex";
   }
 
   private initSize() {
